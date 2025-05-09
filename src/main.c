@@ -1,6 +1,6 @@
-#include "../include/linkedlist.h"
-#include "../include/array.h"
+#include <stdio.h>
 
 int main(){
-    return 1;
+    printf("hello world\n");
+    return -1;
 }

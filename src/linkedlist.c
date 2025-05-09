@@ -1,37 +1,34 @@
 #include "../include/linkedlist.h"
 
-struct List* list_create(){
-    struct List* list = (struct List*) malloc(sizeof(struct List));
-    assert(list != NULL);
-    list->head = node_create(0);
-    list->size = 1;
+Int32List* Int32List_Create(){
+    Int32List* list = (Int32List*) malloc(sizeof(Int32List));
+    list->head = NULL;
+    list->size = 0;
     return list;
 }
 
-InsertResult push_back(List* list, int32_t val){
-    Node* insert_node = node_create(val);
-    Node* current = list->head;
+bool Int32List_PushBack(Int32List* list, int32_t val){
+    Int32Node* insert_node = Int32Node_Create(val);
+    Int32Node* current = list->head;
     while(current->next != NULL){
         current = current->next;
     }
     current->next = insert_node;
     list->size += 1;
-    return INSERT_SUCCESS;
+    return true;
 }
 
-InsertResult push_front(List* list, int32_t val){
-    Node* insert_node = node_create(val);
-    Node* current = list->head;
-    Node* next = current->next;    
-    insert_node->next = next;
-    current->next = insert_node;
+bool Int32List_PushFront(Int32List* list, int32_t val){
+    Int32Node* insert_node = Int32Node_Create(val);
+    if(list->head != NULL) insert_node->next = list->head->next;
+    list->head = insert_node;
     list->size += 1;
-    return INSERT_SUCCESS;
+    return true;
 }
 
-RemoveResult remove(List* list, int val){
-    Node* current = list->head;
-    Node* prev = NULL;
+bool Int32List_Remove(Int32List* list, int32_t val){
+    Int32Node* current = list->head;
+    Int32Node* prev = NULL;
     while(current->next != NULL){
         prev = current;
         current = current->next;
@@ -40,8 +37,41 @@ RemoveResult remove(List* list, int val){
             free(current);
             current = NULL;
             list->size -= 1;
-            return REMOVE_SUCCESS;
+            return true;
         }
     }
-    return REMOVE_FAILED;
+    return false;
+}
+
+int32_t Int32List_Get(Int32List* list, size_t index){
+    if(list->size <= index) assert(false);
+
+    Int32Node* current = list->head;
+    size_t current_index = 0;
+   
+    while(current != NULL){
+       if(current_index == index){
+           return current->val;
+       }
+       current = current->next;
+       current_index += 1;
+    }
+    assert(false); 
+    return -1;
+}
+
+void Int32List_Delete(Int32List* list){
+    Int32Node* current = list->head;
+    Int32Node* prev = NULL;
+    while(current->next != NULL){
+        current = current->next;
+        prev = current;
+        Int32Node_Delete(prev);
+    }
+    Int32Node_Delete(current);
+    free(list);
+}
+
+size_t Int32List_Size(Int32List* list){
+    return list->size;
 }
